@@ -51,5 +51,3 @@ sequenceDiagram
     D-->>B: Acknowledges update
     B-->>F: Returns updated sharing settings
 ```
-
-Please note that this diagram assumes successful operations for simplicity. In real-world scenarios, each interaction should also handle potential failures.

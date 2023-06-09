@@ -165,6 +165,8 @@ sequenceDiagram
 
 ## folder structure
 
+```json
+
 {
   "meta": {
     "name": "AI Mind Map Web App",
@@ -228,5 +230,5 @@ sequenceDiagram
     }
   }
 }
-``
 
+```

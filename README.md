@@ -20,6 +20,35 @@ Our objective is to create an application that provides a seamless and enhanced 
 
 5. Continually improving and expanding our offerings based on user feedback and technological advancements, ensuring our app remains at the forefront of AI-assisted mind mapping tools.
 
+## App features
+
+1. **User Registration & Authentication:**
+   - **Email Registration:** Users can sign up using their email and a secure password.
+   - **Authentication:** Users can log in securely to access their personalized mind map dashboard.
+
+2. **AI-Assisted Mind Mapping:**
+   - **Mind Map Creation:** Users can start a new mind map with AI assistance, providing a persona description and mind map details.
+   - **AI Avatar Generation:** Based on the persona description, the application generates a cartoon-like avatar to represent the persona.
+   - **Node Generation:** Users can add new nodes to the mind map, either manually or using AI to generate nodes based on a given prompt or context.
+   - **Node Expansion:** Users can expand existing nodes, again manually or using AI, enhancing the details and context of the mind map.
+   - **Markdown Support:** All node text supports markdown formatting for structured and detailed nodes.
+   - **Cross Node Connection:** Users can create connections between distant nodes, creating complex and comprehensive mind maps.
+
+3. **Collaboration and Sharing:**
+   - **Mind Map Sharing:** Users can share their mind maps with others, either publicly (viewable and cloneable from a gallery) or privately (through invitation).
+   - **Collaborative Editing:** Invited users can edit shared mind maps, allowing for collaborative brainstorming and planning.
+
+4. **User-Friendly Interface:**
+   - **Interactive Nodes:** Nodes can be interactively dragged and linked, with child nodes moving along with parent nodes.
+   - **Node Buttons:** Hovering over a node reveals buttons for adding new nodes, generating text ideas, creating articles, and generating images.
+
+5. **Data Portability and Integration:**
+   - **Context Download:** Users can download the full context from the starting node to any given node, for use outside of the application.
+   - **Flow Chart/Diagram Creation:** The stored mind map can be used as a starting point for creating other types of diagrams such as flow charts and marketing automation diagrams.
+   - **OpenAI GPT Integration:** The application integrates with OpenAI GPT, either using the user's API key or the app's API key, to provide AI functionalities.
+   - **Database Storage:** All mind maps are securely stored and retrieved from a MongoDB database, ensuring data durability and availability.
+
+
 ## High-Level Architectural Design
 
 ### Frontend - Next.js

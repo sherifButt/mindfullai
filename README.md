@@ -162,3 +162,71 @@ sequenceDiagram
     D-->>B: Acknowledges update
     B-->>F: Returns updated sharing settings
 ```
+
+## folder structure
+
+{
+  "meta": {
+    "name": "AI Mind Map Web App",
+    "seo": {
+      "keywords": ["AI", "Mind Map", "Collaboration", "Web App"],
+      "title": "AI Mind Map Web App: Revolutionize Your Brainstorming Process",
+      "article": "In the contemporary professional landscape, brainstorming and ideation processes are often fraught with challenges...this is where the AI Mind Map Web App comes into play. This unique solution harnesses the power of AI to revolutionize your brainstorming process, offering a host of benefits such as streamlined collaboration, intuitive user interface, and AI-driven insights. Don't wait, unlock your team's creative potential today with the AI Mind Map Web App.",
+      "tags": "AI, Mind Map, Web App, Brainstorming, Collaboration"
+    },
+    "description": "A Web Application that leverages AI to create interactive and dynamic mind maps, fostering enhanced collaboration and idea generation.",
+    "dependencies": ["Next.js", "React", "Express", "MongoDB", "Node.js"],
+    "summary": "AI-powered web application for creating and collaborating on mind maps.",
+    "tags": "AI, Mind Map, Web App, Collaboration"
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "Skills required: Full Stack Development (Node.js, Express.js), Frontend (React, Next.js), Database (MongoDB), AI (OpenAI GPT-3/4)"
+    },
+    {
+      "role": "system",
+      "content": "Project 'AI Mind Map Web App' is a web-based application that allows users to create, share and collaborate on dynamic mind maps leveraging AI technology."
+    },
+    {
+      "role": "system",
+      "content": "Run 'npm install next react react-dom express mongoose' to install the dependencies."
+    },
+    {
+      "role": "system",
+      "content": "Implementation steps include: 1. Setting up the development environment, 2. Creating the database schema, 3. Building the backend and API endpoints, 4. Developing the frontend and integrating with the backend, 5. Testing and deployment."
+    },
+    {
+      "role": "system",
+      "content": "AI-Mind-Map-Web-App/{frontend/{public/{index.html, favicon.ico, manifest.json}, src/{assets/{images/{logo.svg}, styles/{app.scss, _variables.scss}}, ...}"
+    },
+    {
+      "role": "system",
+      "content": "Features include: AI-powered mind map creation, User registration and authentication, Collaboration features, Avatar generation, Mind map sharing, Cross-node connections, and more."
+    }
+  ],
+  "folderStructure": {
+    "AI-Mind-Map-Web-App": {
+      "frontend": {
+        "public": {
+          "index.html": {
+            "instructions": "This is the main HTML document that is served when visitors access your site. The rest of the application's content will be injected into this file during rendering by React.",
+            "implemented": false
+          },
+          "favicon.ico": {
+            "instructions": "This is the small icon that is displayed in the browser tab next to the page title.",
+            "implemented": false
+          },
+          "manifest.json": {
+            "instructions": "This is the Web App Manifest, a JSON file that tells the browser about your Progressive Web App and how it should behave when installed on the user's desktop or mobile device.",
+            "implemented": false
+          },
+          ...
+        }
+      },
+      ...
+    }
+  }
+}
+``
+

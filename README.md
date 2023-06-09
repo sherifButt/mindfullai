@@ -20,6 +20,23 @@ Our objective is to create an application that provides a seamless and enhanced 
 
 5. Continually improving and expanding our offerings based on user feedback and technological advancements, ensuring our app remains at the forefront of AI-assisted mind mapping tools.
 
+**Target Audience:**
+
+Our primary target audience includes project managers, creative professionals, strategists, educators, and students who frequently use brainstorming and mind mapping techniques for idea generation, project planning, and collaborative work.
+
+**Key Value Proposition:**
+
+Our app offers a unique blend of AI-powered mind mapping, allowing for deeper thought exploration and idea expansion, coupled with a highly intuitive interface designed for ease of use, collaboration, and the seamless sharing of maps.
+
+**Unique Selling Proposition:**
+
+Transform your thoughts into AI-powered dynamic mind maps for deeper exploration, seamless collaboration, and more efficient project planning.
+
+**Key Feature to Focus on:**
+
+The key attractive value that the app revolves around is the "AI-Assisted Mind Mapping". This unique integration of AI technology with traditional mind mapping not only simplifies the process of creating and expanding mind maps but also brings in a level of depth, context, and detail that isn't possible with traditional methods. This feature, combined with the intuitive interface and collaboration capabilities, is what sets this app apart from others in the market.
+
+
 ## App features
 
 1. **User Registration & Authentication:**

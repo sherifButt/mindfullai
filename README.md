@@ -1,3 +1,16 @@
+Table of content:
+
+- [mindfullai](#mindfullai)
+  - [App features](#app-features)
+  - [High-Level Architectural Design](#high-level-architectural-design)
+    - [Frontend - Next.js](#frontend---nextjs)
+    - [Backend - Express.js](#backend---expressjs)
+    - [Database - MongoDB](#database---mongodb)
+    - [OpenAI GPT Integration](#openai-gpt-integration)
+    - [Integration with Other Applications](#integration-with-other-applications)
+  - [Data Flow](#data-flow)
+  - [folder structure](#folder-structure)
+
 # mindfullai
 
 **AI Mind Map Web App** is an innovative tool designed to revolutionize the way individuals and teams brainstorm, conceptualize, and share ideas. Leveraging the power of OpenAI's GPT technology, this app is capable of taking user inputs and translating them into comprehensive, visually appealing, and dynamic mind maps. The app incorporates the concept of AI avatars, allowing users to create a persona that the mind map will revolve around, adding a new dimension to idea generation and project planning.
@@ -168,67 +181,98 @@ sequenceDiagram
 ```json
 
 {
-  "meta": {
-    "name": "AI Mind Map Web App",
-    "seo": {
-      "keywords": ["AI", "Mind Map", "Collaboration", "Web App"],
-      "title": "AI Mind Map Web App: Revolutionize Your Brainstorming Process",
-      "article": "In the contemporary professional landscape, brainstorming and ideation processes are often fraught with challenges...this is where the AI Mind Map Web App comes into play. This unique solution harnesses the power of AI to revolutionize your brainstorming process, offering a host of benefits such as streamlined collaboration, intuitive user interface, and AI-driven insights. Don't wait, unlock your team's creative potential today with the AI Mind Map Web App.",
-      "tags": "AI, Mind Map, Web App, Brainstorming, Collaboration"
-    },
-    "description": "A Web Application that leverages AI to create interactive and dynamic mind maps, fostering enhanced collaboration and idea generation.",
-    "dependencies": ["Next.js", "React", "Express", "MongoDB", "Node.js"],
-    "summary": "AI-powered web application for creating and collaborating on mind maps.",
-    "tags": "AI, Mind Map, Web App, Collaboration"
-  },
-  "messages": [
-    {
-      "role": "system",
-      "content": "Skills required: Full Stack Development (Node.js, Express.js), Frontend (React, Next.js), Database (MongoDB), AI (OpenAI GPT-3/4)"
-    },
-    {
-      "role": "system",
-      "content": "Project 'AI Mind Map Web App' is a web-based application that allows users to create, share and collaborate on dynamic mind maps leveraging AI technology."
-    },
-    {
-      "role": "system",
-      "content": "Run 'npm install next react react-dom express mongoose' to install the dependencies."
-    },
-    {
-      "role": "system",
-      "content": "Implementation steps include: 1. Setting up the development environment, 2. Creating the database schema, 3. Building the backend and API endpoints, 4. Developing the frontend and integrating with the backend, 5. Testing and deployment."
-    },
-    {
-      "role": "system",
-      "content": "AI-Mind-Map-Web-App/{frontend/{public/{index.html, favicon.ico, manifest.json}, src/{assets/{images/{logo.svg}, styles/{app.scss, _variables.scss}}, ...}"
-    },
-    {
-      "role": "system",
-      "content": "Features include: AI-powered mind map creation, User registration and authentication, Collaboration features, Avatar generation, Mind map sharing, Cross-node connections, and more."
-    }
-  ],
   "folderStructure": {
     "AI-Mind-Map-Web-App": {
       "frontend": {
         "public": {
-          "index.html": {
-            "instructions": "This is the main HTML document that is served when visitors access your site. The rest of the application's content will be injected into this file during rendering by React.",
-            "implemented": false
+          "index.html": "HTML template for the app, includes root div where the React App will mount.",
+          "favicon.ico": "The favicon for the web app.",
+          "manifest.json": "App manifest file for PWA setup."
+        },
+        "src": {
+          "assets": {
+            "images": {
+              "logo.svg": "Logo image used throughout the app."
+            },
+            "styles": {
+              "app.scss": "Global styles for the app.",
+              "_variables.scss": "Sass variables file, contains colors, fonts, etc."
+            }
           },
-          "favicon.ico": {
-            "instructions": "This is the small icon that is displayed in the browser tab next to the page title.",
-            "implemented": false
+          "components": {
+            "MindMap": {
+              "MindMap.jsx": "React component for the Mind Map, includes logic for rendering nodes and connections. Exports the MindMap component, which is used in the Dashboard page. Implemented in JavaScript and JSX.",
+              "MindMap.scss": "Styles specific to the MindMap component."
+            },
+            "Node": {
+              "Node.jsx": "Component for individual nodes in the mind map. Implemented in JavaScript and JSX. Exports the Node component, which is used in the MindMap component.",
+              "Node.scss": "Styles specific to the Node component."
+            },
+            "Avatar": {
+              "Avatar.jsx": "Component for generating and displaying avatars. Implemented in JavaScript and JSX. Exports the Avatar component, which is used in the Node component.",
+              "Avatar.scss": "Styles specific to the Avatar component."
+            },
+            "Shared": {
+              "Button.jsx": "Reusable Button component. Implemented in JavaScript and JSX. Exported and used across multiple components and pages.",
+              "Input.jsx": "Reusable Input component. Implemented in JavaScript and JSX. Exported and used across multiple components and pages."
+            }
           },
-          "manifest.json": {
-            "instructions": "This is the Web App Manifest, a JSON file that tells the browser about your Progressive Web App and how it should behave when installed on the user's desktop or mobile device.",
-            "implemented": false
+          "pages": {
+            "Home": {
+              "Home.jsx": "Landing page component. Implemented in JavaScript and JSX. Displays app description and call-to-action buttons.",
+              "Home.scss": "Styles specific to the Home page."
+            },
+            "Dashboard": {
+              "Dashboard.jsx": "Dashboard component where users can create and interact with mind maps. Implemented in JavaScript and JSX.",
+              "Dashboard.scss": "Styles specific to the Dashboard page."
+            },
+            "Register": {
+              "Register.jsx": "User registration page component. Implemented in JavaScript and JSX. Interacts with the backend API for user registration.",
+              "Register.scss": "Styles specific to the Register page."
+            },
+            "Login": {
+              "Login.jsx": "User login page component. Implemented in JavaScript and JSX. Interacts with the backend API for user authentication.",
+              "Login.scss": "Styles specific to the Login page."
+            }
           },
-          ...
-        }
+          "utils": {
+            "api.js": "Functions for interacting with the backend API. Implemented in JavaScript.",
+            "helpers.js": "Helper functions used across the app. Implemented in JavaScript."
+          },
+          "App.jsx": "Root React component, includes routing logic. Implemented in JavaScript and JSX.",
+          "App.scss": "Global styles specific to the App component.",
+          "index.js": "Entry point for the React app, renders the App component."
+        },
+        "package.json": "Project metadata and dependencies. Node.js and npm are required. Main dependencies include React, Next.js, and Sass."
       },
-      ...
+      "backend": {
+        "bin": {
+          "www": "Entry point for the backend server. Implemented in JavaScript."
+        },
+        "models": {
+          "user.js": "Mongoose model for users. Implemented in JavaScript.",
+          "mindmap.js": "Mongoose model for mind maps. Implemented in JavaScript."
+        },
+        "routes": {
+          "api": {
+            "users.js": "API routes for user-related actions. Implemented in JavaScript.",
+            "mindmaps.js": "API routes for mindmap-related actions. Implemented in JavaScript."
+          },
+          "index.js": "Main router file, combines all other routes. Implemented in JavaScript.",
+          "auth.js": "Routes for user authentication. Implemented in JavaScript."
+        },
+        "utils": {
+          "db.js": "Database connection setup for MongoDB. Implemented in JavaScript."
+        },
+        "app.js": "Express.js app setup, includes middleware and routing setup. Implemented in JavaScript.",
+        "package.json": "Project metadata and dependencies. Node.js and npm are required. Main dependencies include Express, Mongoose, and bcrypt."
+      },
+      "swagger": {
+        "index.yaml": "Main Swagger file, includes all API documentation.",
+        "components.yaml": "Swagger components, includes schemas for API documentation."
+      },
+      "README.md": "Markdown file with instructions about the project. Includes description, how to use it, examples, target audience, and license."
     }
   }
 }
-
 ```

@@ -51,7 +51,7 @@ In order to control back-end logic using React-Flow or any other flow-based visu
 
 In the case of an email operation, you might have a "Send Email" node that triggers a function in your back-end to send an email to a user, and a "Delay" node that uses something like JavaScript's `setTimeout` function to delay the next action by a specified amount of time. Then, if you connect these nodes in your flow diagram with an edge, the back-end would execute these operations in the order specified by the diagram.
 
-Here's a high-level example of how this might look in practice:
+This is a high-level example of how this might look in practice:
 
 1. **"Send Email" Node**: When this node is activated (i.e., when an edge that points to this node is traversed), it triggers a function in your back-end that sends an email. This function might take parameters such as the recipient's email address, the subject line, and the body text.
 
@@ -59,7 +59,7 @@ Here's a high-level example of how this might look in practice:
 
 3. **"Send Follow-Up Email" Node**: This node, which is connected to the "Delay" node by an edge, triggers a function that sends a follow-up email after the delay.
 
-Here's a hypothetical sequence diagram illustrating this flow:
+This is a hypothetical sequence diagram illustrating this flow:
 
 ```mermaid
 sequenceDiagram
@@ -108,7 +108,7 @@ Remember that this approach requires close coordination between the frontend and
 
 As a final note, while React Flow allows you to create beautiful and complex diagrams, it does not inherently provide a way to execute these diagrams. The logic to traverse the diagram, map nodes to functions, and execute the corresponding operations must be implemented separately. This can be a nontrivial task depending on the complexity of your flow and the nature of your backend operations.
 
-To represent the process of a chain of instructions executed in the backend from a frontend diagram, you can use a sequence diagram. Here's a simple example of a Mermaid sequence diagram that models sending an email after user interaction with the flow diagram:
+To represent the process of a chain of instructions executed in the backend from a frontend diagram, you can use a sequence diagram. This is a simple example of a Mermaid sequence diagram that models sending an email after user interaction with the flow diagram:
 
 ```mermaid
 sequenceDiagram
@@ -139,9 +139,9 @@ Note that Mermaid diagrams are not natively supported in all markdown processors
 
 ## Using a db layer
 
-Yes, using a database can be beneficial for persisting the chain of instructions and their state, especially in complex flows or when you want to save or resume work.
+Using a database can be beneficial for persisting the chain of instructions and their state, especially in complex flows or when you want to save or resume work.
 
-Here's a general approach to storing your React Flow diagrams and processing them as a sequence of logic in your backend:
+This is a general approach to storing your React Flow diagrams and processing them as a sequence of logic in your backend:
 
 1. [**Persist the React Flow Diagram:**](1_presist-the-react-flow-diagram.md) React Flow provides you with the state of the entire diagram in a format that can be easily serialized to JSON. This includes the positions of nodes and their connections. When a user creates a diagram, you can save this state in your database. You might create a Diagram table in your database with a JSON or a similar type column to store this state.
 
@@ -241,7 +241,7 @@ sequenceDiagram
 
 Finally, when processing a diagram, the backend would fetch the diagram and its associated instructions, execute them in the specified order, and return the results.
 
-Here's an example of processing a diagram:
+This is an example of processing a diagram:
 
 ```mermaid
 sequenceDiagram
@@ -502,7 +502,7 @@ The actual instances of each instruction are stored in the `Diagram_Instruction`
 
 Now, when the user triggers the process, the back-end can fetch all the instructions for the diagram, ordered by the `Order` column. It then executes each one in order, passing the `Params` to the instruction.
 
-Here's how the execution might look for Diagram 1:
+This is how the execution might look for Diagram 1:
 
 ```mermaid
 sequenceDiagram
@@ -555,7 +555,7 @@ This overview should give you an idea of how to architect such a system using a 
 #### Handling Exceptions:
 Your backend needs to be robust and able to handle exceptions gracefully. For example, when executing an instruction, there might be an error such as a failure in sending an email. In such cases, you could retry the operation or report it to the frontend, depending on the nature of the error.
 
-Here's how you might handle exceptions for Instruction 3 (sending email) of Diagram 1:
+This is how you might handle exceptions for Instruction 3 (sending email) of Diagram 1:
 
 ```mermaid
 sequenceDiagram
@@ -574,9 +574,9 @@ sequenceDiagram
 While executing each instruction, you can have the backend send status updates to the frontend. The frontend can then update the diagram or display notifications to the user based on these updates.
 
 Real-time Updates:
-For real-time updates, you can use websockets or similar technology to keep a live connection between your frontend and backend. This way, as soon as there's a status update on the backend, it can be immediately pushed to the frontend.
+For real-time updates, you can use websockets or similar technology to keep a live connection between your frontend and backend. This way, as soon as tThis is a status update on the backend, it can be immediately pushed to the frontend.
 
-Here's how real-time updates might look:
+This is how real-time updates might look:
 
 ```mermaid
 sequenceDiagram
@@ -598,7 +598,7 @@ By following this approach, you can have a highly interactive and responsive sys
 
 For critical tasks that may fail due to reasons like network issues, providing a retry mechanism can be very beneficial. This can be as simple as attempting the action again after a set delay or as complex as exponential backoff with a maximum retry limit.
 
-Here's a sequence for retrying an email send operation:
+This is a sequence for retrying an email send operation:
 
 ```mermaid
 sequenceDiagram
@@ -615,7 +615,7 @@ sequenceDiagram
 #### Task Priorities:
 If you have tasks of varying importance, you may want to prioritize more critical tasks. The priority could be an attribute of the task itself, or it could be derived from the associated diagram. In general, you'll need to ensure your backend can accommodate this level of scheduling complexity.
 
-Here's a sequence for processing two tasks with different priorities:
+This is a sequence for processing two tasks with different priorities:
 
 ```mermaid
 sequenceDiagram
@@ -629,7 +629,7 @@ sequenceDiagram
 #### Task Scheduling:
 While immediate execution is appropriate for some tasks, others might need to be scheduled for a later time. Your backend should have the capability to schedule tasks at specific times or after certain delays. 
 
-Here's a sequence for scheduling a task:
+This is a sequence for scheduling a task:
 
 ```mermaid
 sequenceDiagram
@@ -724,7 +724,7 @@ Consider a web application where users can create and edit flow diagrams. The ap
 | 2          | H       | Check Email Opened | {} |
 
 
-User A wants to edit the "User Signup Process" diagram. Here's how the process can look:
+User A wants to edit the "User Signup Process" diagram. This is how the process can look:
 
 1. User A opens the web application and requests to edit the "User Signup Process" diagram.
 2. The application sends a request to the backend service, asking for data for the diagram with ID 1.

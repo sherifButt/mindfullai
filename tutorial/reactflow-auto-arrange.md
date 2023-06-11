@@ -4,7 +4,7 @@ Arranging nodes in a diagram to follow a side way structure or tree-like pattern
 
 React Flow doesn't currently provide a built-in method for automatic side way or tree layout of nodes. But you can calculate the positions of nodes in a tree structure yourself. 
 
-Here's an example of how you might do this, creating a binary tree:
+This is an example of how you might do this, creating a binary tree:
 
 ```javascript
 import React from 'react';

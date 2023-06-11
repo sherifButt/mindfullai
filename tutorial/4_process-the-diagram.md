@@ -8,7 +8,7 @@ Let's consider a simple case where you have a diagram with three nodes, each rep
 - Node 2: "Wait 5 minutes"
 - Node 3: "Send a Follow-up Email"
 
-Here's how it might look in your `Diagram` and `Instruction` tables:
+This is how it might look in your `Diagram` and `Instruction` tables:
 
 ```
 Diagram Table

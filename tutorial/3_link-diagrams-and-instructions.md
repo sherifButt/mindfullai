@@ -6,7 +6,7 @@ Let's break it down:
 
 1. **Diagrams**: These would be the actual representation of your flow chart that you create on the frontend using React Flow. Each diagram is stored as a JSON object, which represents the state of the diagram. Each node in the diagram can have an associated instruction, which can be denoted by a unique identifier.
 
-   Here's an example of what a Diagram table might look like:
+   This is an example of what a Diagram table might look like:
 process-the-diagram
     ```
     Diagram Table
@@ -15,7 +15,7 @@ process-the-diagram
     1  | 'Flow1'| {"nodes":[{"id":"node1","type":"start","data":{"label":"Start","instruction_id": 1}}, {"id":"node2","type":"end","data":{"label":"End","instruction_id": 2}}]}
     ```
 
-    Here's a mermaid sequence diagram for saving a diagram:
+    This is a mermaid sequence diagram for saving a diagram:
 
     ```mermaid
     sequenceDiagram
@@ -33,7 +33,7 @@ process-the-diagram
 
 2. **Instructions**: These are the actions that each node in the flow chart would represent. Each instruction can have a unique identifier which can be used to link it to a node in a diagram.
 
-    Here's an example of what an Instruction table might look like:
+    This is an example of what an Instruction table might look like:
 
     ```
     Instruction Table
@@ -43,7 +43,7 @@ process-the-diagram
     2  | 'end'           | {}
     ```
 
-    Here's a mermaid sequence diagram for saving an instruction:
+    This is a mermaid sequence diagram for saving an instruction:
 
     ```mermaid
     sequenceDiagram
@@ -61,7 +61,7 @@ process-the-diagram
 
 3. **Linking Diagrams and Instructions**: Each node in your Diagram can be associated with an instruction in the Instructions table. This can be done by storing the instruction ID as part of the node's data in the Diagram JSON. When you want to execute the logic defined by the Diagram, you can parse the Diagram JSON, extract the instruction IDs, fetch the corresponding Instructions from the Instruction table, and execute them in the order defined by the Diagram. 
 
-   Here's a mermaid sequence diagram for linking diagram nodes with instructions and executing them:
+   This is a mermaid sequence diagram for linking diagram nodes with instructions and executing them:
 
    ```mermaid
    sequenceDiagram

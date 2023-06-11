@@ -14,7 +14,7 @@ ID  | Diagram_State
 
 Where `Diagram_State` is a JSON object containing the serialized state of the React Flow diagram.
 
-Now, when a user creates or modifies a diagram, we need to save this state to the database. Here's a mermaid sequence diagram outlining that process:
+Now, when a user creates or modifies a diagram, we need to save this state to the database. This is a mermaid sequence diagram outlining that process:
 
 ```mermaid
 sequenceDiagram

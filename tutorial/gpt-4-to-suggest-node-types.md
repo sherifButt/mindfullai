@@ -7,6 +7,7 @@
     - [1. Re-prompting the AI](#1-re-prompting-the-ai)
   - [Maintaining Up-to-Date Instruction Tables and Error Handling in a Full-Stack Application](#maintaining-up-to-date-instruction-tables-and-error-handling-in-a-full-stack-application)
   - [Node.js Implementation for Dynamic Instruction Fetching and Validation in a Full-Stack Application](#nodejs-implementation-for-dynamic-instruction-fetching-and-validation-in-a-full-stack-application)
+  - [Implementing GPT-4 Instruction Generation and Validation in a Node.js Application with Express, PostgreSQL, and OpenAI](#implementing-gpt-4-instruction-generation-and-validation-in-a-nodejs-application-with-express-postgresql-and-openai)
 
 
 OpenAI's GPT can be useful for understanding natural language and making suggestions, but as of my last update in September 2021, it doesn't perform actions directly. Therefore, you could use it to understand the instruction from a title and description and suggest a node type or action to be associated with a node, but the actual execution of that logic will have to be implemented by you. 
@@ -478,3 +479,63 @@ In this example, we're going to create a simplified Node.js server that fetches 
 Please note, you need to replace `'YOUR_OPENAI_API_KEY'` with your actual OpenAI API key.
 
 This is a simplified example and doesn't include any error handling or input validation. In a production application, you would want to include these, along with tests, logging, and other important features.
+
+## Implementing GPT-4 Instruction Generation and Validation in a Node.js Application with Express, PostgreSQL, and OpenAI
+
+In this scenario, let's assume we have an express application that has endpoints to handle nodes' creation and validation. We are also using `pg-promise` for PostgreSQL and OpenAI's Node.js client library.
+
+Here's a simple setup:
+
+```javascript
+const express = require('express');
+const app = express();
+const { Client } = require('openai');
+const openai = new Client({ api_key: 'your-api-key' });
+const db = require('./db'); // Assume you have configured your PostgreSQL connection in this file
+
+app.use(express.json());
+
+app.post('/createNode', async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    // Fetch current Instruction table
+    const instructionTable = await db.any('SELECT * FROM Instruction');
+
+    // Create the prompt for OpenAI GPT-4
+    const systemPrompt = `Given a task with title "${title}" and description "${description}", suggest an appropriate action from the following options: ${instructionTable.map(i => i.action).join(', ')}`;
+
+    // Call the OpenAI API
+    const gptResponse = await openai.Completion.create({
+      engine: 'text-davinci-004',
+      prompt: systemPrompt,
+      temperature: 0.5,
+      max_tokens: 60
+    });
+
+    // Extract the suggested instruction
+    const suggestedInstruction = gptResponse.choices[0].text.trim();
+
+    // Validate if the instruction exists in the Instruction table
+    if (instructionTable.map(i => i.action).includes(suggestedInstruction)) {
+      // Insert the new node with the linked instruction into DiagramNode table
+      await db.none('INSERT INTO DiagramNode (title, description, instruction) VALUES ($1, $2, $3)', [title, description, suggestedInstruction]);
+      
+      res.status(200).send('Node created successfully');
+    } else {
+      // Here, you can either re-prompt the AI or handle this as an error
+      throw new Error('The suggested instruction is not valid');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+app.listen(3000, () => console.log('Server running on port 3000'));
+```
+
+In this setup, when a `POST` request is sent to `/createNode` with a JSON body containing a `title` and `description`, the server fetches the current Instruction table from the database, generates a system prompt, and sends it to the OpenAI API.
+
+When the OpenAI API responds, the server extracts the suggested instruction and checks if it exists in the Instruction table. If it does, it inserts a new row into the DiagramNode table linking the new node to the instruction and sends a success response. If it doesn't, it throws an error.
+
+This is a basic setup and might need adjustments based on the specifics of your application.

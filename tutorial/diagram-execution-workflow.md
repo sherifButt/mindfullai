@@ -1,11 +1,12 @@
-# React-flow to chain execution
+# Diagram Execution Workflow
 
 **Table of Content:**
-- [React-flow to chain execution](#react-flow-to-chain-execution)
+- [Diagram Execution Workflow](#diagram-execution-workflow)
   - [Backend logic:](#backend-logic)
   - [How to control back end logic](#how-to-control-back-end-logic)
   - [how to create a chain of instructions (logic) via react flow diagram. and excuse it via back end.](#how-to-create-a-chain-of-instructions-logic-via-react-flow-diagram-and-excuse-it-via-back-end)
   - [Using a db layer](#using-a-db-layer)
+  - [Encapsulates the Full App logic](#encapsulates-the-full-app-logic)
   - [Examples](#examples)
     - [Example 01 (Send Email)](#example-01-send-email)
     - [Example 2 ( a user who wants to create a diagram that consists of two instructions: Send an email, and then send a notification.)](#example-2--a-user-who-wants-to-create-a-diagram-that-consists-of-two-instructions-send-an-email-and-then-send-a-notification)
@@ -175,6 +176,47 @@ sequenceDiagram
     B->>F: Send Execution Status
     F->>U: Show Execution Status
 ```
+
+## Encapsulates the Full App logic
+
+Sure, here's a sequence diagram that encapsulates the logic from the beginning till now:
+
+```mermaid
+sequenceDiagram
+    participant Client as Front-end (Client)
+    participant Server as Back-end (Server)
+    participant Redis as Redis Job Queue
+    participant GPT as GPT-4
+    participant DB as Database
+    Client->>Server: Send/Update Diagram
+    Server->>DB: Save/Update Diagram
+    Client->>Server: Request to execute Diagram
+    Server->>DB: Fetch Diagram
+    Server->>Server: Translate Diagram to sequence of Instructions
+    loop Each Instruction
+        Server->>DB: Fetch Instruction details
+        Server->>Server: Check type of Instruction
+        alt If Instruction is to send email or perform immediate action
+            Server->>Server: Execute Instruction immediately
+        else If Instruction is to wait for a period of time
+            Server->>Redis: Schedule Job with delay
+        else If Instruction is to wait until a certain time
+            Server->>Redis: Schedule Job with delay until specific time
+        end
+    end
+    Redis->>Server: Trigger Jobs as per the schedule
+    Server->>Server: Execute the respective Instruction
+    loop Each Instruction requiring GPT-4
+        Server->>GPT: Send Instruction details
+        GPT->>Server: Respond with suggested Instruction
+    end
+    Server->>Client: Send back results/confirmation
+```
+
+This diagram represents an encapsulation of all steps from storing diagrams, executing instructions, handling different types of instructions, using GPT-4 for suggestions, to sending results back to the client.
+
+It should be noted that this diagram simplifies some details for clarity. The actual implementation would need to handle things like error conditions, retries, server crashes, etc., as previously discussed.
+
 
 ## Examples
 

@@ -123,3 +123,4 @@ For an email marketing process, there could be multiple elements that we need to
 | 117            | CreateRetentionCampaign        | campaignDetails                          | Creates a new email campaign aimed at re-engaging inactive users.                     |
 | 118            | StartRetentionCampaign         | campaignId                               | Starts the specified user retention email campaign.                                   |
 | 119            | AnalyzeRetentionCampaignResults| campaignId                               | Generates a report on the results of a specific user retention campaign.              |
+

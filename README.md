@@ -9,6 +9,10 @@ Table of content:
     - [OpenAI GPT Integration](#openai-gpt-integration)
     - [Integration with Other Applications](#integration-with-other-applications)
   - [Data Flow](#data-flow)
+- [Incorporation of Redis Job Queue and Enhanced Workflow Processing](#incorporation-of-redis-job-queue-and-enhanced-workflow-processing)
+  - [Introduction of Redis Job Queue](#introduction-of-redis-job-queue)
+  - [Enhanced Diagram Execution Workflow](#enhanced-diagram-execution-workflow)
+  - [Summary](#summary)
 
 # mindfullai
 
@@ -173,4 +177,95 @@ sequenceDiagram
     B->>D: Updates sharing settings
     D-->>B: Acknowledges update
     B-->>F: Returns updated sharing settings
+```
+
+# Incorporation of Redis Job Queue and Enhanced Workflow Processing
+
+In this updated sequence chart, we have introduced new elements and workflows to accommodate more complex interactions. The major changes are as follows:
+
+## [Introduction of Redis Job Queue](./tutorial/)
+
+A new participant, the **Redis Job Queue** (R), has been added to our sequence. Redis is an open-source, in-memory data structure store used as a database, cache, and message broker. In our scenario, it's used as a Job Queue for managing asynchronous tasks.
+
+Jobs that need to be executed at a later time (either after a delay or at a specific time) are now scheduled in the Redis Job Queue. This allows for better management of tasks that don't need to be performed immediately and improves the responsiveness of our application.
+
+## [Enhanced Diagram Execution Workflow](./tutorial/diagram-execution-workflow.md)
+
+In the updated sequence, there is a new process related to diagram execution. The user can now send or update a diagram via the frontend, which then gets saved or updated in the database by the backend. The user can also request the backend to execute a specific diagram. 
+
+The backend fetches the requested diagram from the database and translates it into a sequence of instructions. Each instruction is fetched in detail from the database, and based on the type of instruction, various actions can occur:
+
+- If the instruction is to send an email or perform an immediate action, the backend executes the instruction right away.
+- If the instruction is to wait for a certain period or until a specific time, the backend schedules the job with the required delay in the Redis Job Queue.
+
+The Redis Job Queue triggers the jobs as per the schedule, and the backend executes the corresponding instruction.
+
+Moreover, if an instruction requires the use of the GPT-4 AI model, the backend sends the instruction details to GPT-4, which then returns the suggested instruction. This process occurs in a loop for each instruction requiring GPT-4.
+
+Once all instructions have been processed, the backend returns the results or confirmation to the frontend.
+
+## Summary
+
+The updated sequence chart represents a more complex application workflow with the integration of the Redis Job Queue for managing asynchronous tasks and an enhanced diagram execution workflow that incorporates immediate execution, delayed jobs, and interaction with the GPT-4 AI model for certain instructions.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant D as Database
+    participant AI as GPT-4
+    participant R as Redis Job Queue
+    U->>F: Inputs email and password
+    F->>B: Sends registration request
+    B->>D: Saves user data
+    D-->>B: Acknowledges save
+    B-->>F: Sends JWT
+    U->>F: Inputs mind map data
+    F->>B: Sends mind map creation request
+    B->>AI: Sends persona description
+    AI-->>B: Returns avatar
+    B->>D: Saves mind map and avatar
+    D-->>B: Acknowledges save
+    B->>AI: Sends mind map data
+    AI-->>B: Returns initial mind map
+    B->>D: Saves mind map
+    D-->>B: Acknowledges save
+    B-->>F: Returns initial mind map and avatar
+    U->>F: Inputs new node prompt
+    F->>B: Sends node addition request
+    B->>AI: Sends node prompt
+    AI-->>B: Returns new node
+    B->>D: Updates mind map
+    D-->>B: Acknowledges update
+    B-->>F: Returns updated mind map
+    U->>F: Shares mind map
+    F->>B: Sends sharing request
+    B->>D: Updates sharing settings
+    D-->>B: Acknowledges update
+    B-->>F: Returns updated sharing settings
+    F->>B: Send/Update Diagram
+    B->>D: Save/Update Diagram
+    F->>B: Request to execute Diagram
+    B->>D: Fetch Diagram
+    B->>B: Translate Diagram to sequence of Instructions
+    loop Each Instruction
+        B->>D: Fetch Instruction details
+        B->>B: Check type of Instruction
+        alt If Instruction is to send email or perform immediate action
+            B->>B: Execute Instruction immediately
+        else If Instruction is to wait for a period of time
+            B->>R: Schedule Job with delay
+        else If Instruction is to wait until a certain time
+            B->>R: Schedule Job with delay until specific time
+        end
+    end
+    R->>B: Trigger Jobs as per the schedule
+    B->>B: Execute the respective Instruction
+    loop Each Instruction requiring GPT-4
+        B->>AI: Send Instruction details
+        AI->>B: Respond with suggested Instruction
+    end
+    B->>F: Send back results/confirmation
+
 ```

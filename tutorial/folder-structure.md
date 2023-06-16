@@ -6,6 +6,9 @@
   - [`.json` format](#json-format)
 - [JSON to react-flow convertingAlgorithm](#json-to-react-flow-convertingalgorithm)
 - [create tree format sideways diagram](#create-tree-format-sideways-diagram)
+- [updated folder structure](#updated-folder-structure)
+- [Frontend](#frontend)
+- [Backend](#backend)
 
 
 Here is a suggested file structure to organize the implementation phase of the AI Mind Map Web App. This structure assumes a common project layout with a separate frontend and backend directory. It also includes a `swagger` directory for API documentation using Swagger.
@@ -290,3 +293,131 @@ This script will traverse the folder structure depth-first and create a new node
 Arranging nodes in a diagram to follow a side way structure or tree-like pattern with rectangular edges can be accomplished in React Flow using a combination of the library's node layout functionality and the `smoothstep` edge type.
 
 React Flow doesn't currently provide a built-in method for automatic side way or tree layout of nodes. But you can calculate the positions of nodes in a tree structure yourself. [please visit his article](reactflow-auto-arrange.md)
+
+
+## updated folder structure
+
+Sure, here's a proposed file structure for the front end and back end of this project.
+
+## Frontend
+
+The front end will be built using React and structured as follows:
+
+```
+/frontend
+    /public
+        index.html
+        favicon.ico
+    /src
+        /components
+            /Avatar
+                Avatar.jsx
+                Avatar.css
+            /Diagram
+                Diagram.jsx
+                Diagram.css
+            /DiagramNode
+                DiagramNode.jsx
+                DiagramNode.css
+            /LoginForm
+                LoginForm.jsx
+                LoginForm.css
+            /RegistrationForm
+                RegistrationForm.jsx
+                RegistrationForm.css
+            /NodeForm
+                NodeForm.jsx
+                NodeForm.css
+            /SharedDiagram
+                SharedDiagram.jsx
+                SharedDiagram.css
+        /pages
+            /Home
+                Home.jsx
+                Home.css
+            /Dashboard
+                Dashboard.jsx
+                Dashboard.css
+            /DiagramEditor
+                DiagramEditor.jsx
+                DiagramEditor.css
+            /SharedDiagrams
+                SharedDiagrams.jsx
+                SharedDiagrams.css
+        /services
+            auth.js
+            diagram.js
+            avatar.js
+            notification.js
+        /utils
+            privateRoute.jsx
+        App.jsx
+        App.css
+        index.jsx
+    package.json
+    README.md
+```
+
+## Backend
+
+The back end will be built using Node.js with Express and structured as follows:
+
+```
+/backend
+    /src
+        /controllers
+            authController.js
+            diagramController.js
+            avatarController.js
+            jobController.js
+            notificationController.js
+        /models
+            userModel.js
+            diagramModel.js
+            instructionModel.js
+            avatarModel.js
+            jobModel.js
+            notificationModel.js
+        /middlewares
+            auth.js
+            error.js
+        /utils
+            emailTemplates.js
+        /routes
+            authRoutes.js
+            diagramRoutes.js
+            avatarRoutes.js
+            jobRoutes.js
+            notificationRoutes.js
+        server.js
+    /tests
+        /unit
+            /controllers
+                authController.test.js
+                diagramController.test.js
+                avatarController.test.js
+                jobController.test.js
+                notificationController.test.js
+            /models
+                userModel.test.js
+                diagramModel.test.js
+                instructionModel.test.js
+                avatarModel.test.js
+                jobModel.test.js
+                notificationModel.test.js
+        /integration
+            userRegistrationLoginFlow.test.js
+            diagramCreationFlow.test.js
+        /e2e
+            userJourney.test.js
+    /apiDocs
+        swagger.json
+    package.json
+    README.md
+```
+
+For the Swagger documentation, you'll create a JSON file (`swagger.json`) following the OpenAPI 3.0 specifications. This file will include paths, schemas, responses, etc. You will place this file in a separate `/apiDocs` directory and use the Swagger UI Express package to serve your API documentation on a specific route, for example `/api-docs`. 
+
+For detailed information on how to create this file, you can refer to the [Swagger Official Documentation](https://swagger.io/docs/specification/basic-structure/).
+
+Remember, the above structure is a starting point and can be adapted based on the needs of the project and the preferences of the development team.

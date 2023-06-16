@@ -13,6 +13,8 @@ Table of content:
   - [Introduction of Redis Job Queue](#introduction-of-redis-job-queue)
   - [Enhanced Diagram Execution Workflow](#enhanced-diagram-execution-workflow)
   - [Summary](#summary)
+    - [Incorporating optimized patch node creation](#incorporating-optimized-patch-node-creation)
+    - [Entity-Relationship (ER) Diagram based on the Sequence Diagram](#entity-relationship-er-diagram-based-on-the-sequence-diagram)
 
 # mindfullai
 
@@ -144,7 +146,7 @@ below is the data flow in a sequence diagram using the Mermaid syntax:
 
 ```mermaid
 sequenceDiagram
-    participant U as User
+    actor U as User
     participant F as Frontend
     participant B as Backend
     participant D as Database
@@ -210,7 +212,8 @@ The updated sequence chart represents a more complex application workflow with t
 
 ```mermaid
 sequenceDiagram
-    participant U as User
+    autonumber
+    actor U as User
     participant F as Frontend
     participant B as Backend
     participant D as Database
@@ -269,3 +272,212 @@ sequenceDiagram
     B->>F: Send back results/confirmation
 
 ```
+
+### Incorporating optimized patch node creation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant F as Frontend
+    participant B as Backend
+    participant D as Database
+    participant AI as GPT-4
+    participant S as Image Storage
+    participant Redis as Redis Job Queue
+    participant A as Avatar Creation API
+
+    U->>F: Inputs email and password
+    F->>B: Sends registration request
+    B->>D: Saves user data
+    D-->>B: Acknowledges save
+    B-->>F: Sends JWT
+
+    U->>F: Inputs diagram data <br> persona description and diagram description
+    F->>B: Sends diagram creation request
+    B->>AI: Sends persona description
+    AI->>B: Return processed description & features for avatar
+    B->>A: Send processed description to Avatar API
+    A->>B: Return generated avatar image
+    B->>S: Store generated avatar image
+    S->>B: Confirm storage and return image location
+    B->>D: Saves diagram and avatar image
+    D-->>B: Acknowledges save
+
+    B->>AI: Sends diagram description
+    AI-->>B: Returns initial diagram
+    B->>D: Saves diagram
+    D-->>B: Acknowledges save
+    B-->>F: Returns initial diagram and avatar image link
+
+    U->>F: Create multiple nodes in diagram
+    Note over F: Display nodes as loading
+    F->>B: Send batch request for node creation
+    B->>AI: Forward request to GPT-4
+    AI-->>B: Return instructions for nodes
+    B-->>F: Return created nodes data
+    Note over F: Update nodes with returned data
+    F->>U: Display updated nodes in diagram
+
+    U->>F: Inputs new node prompt
+    F->>B: Sends node addition request
+    B->>AI: Sends node prompt
+    AI-->>B: Returns new node
+    B->>D: Updates diagram
+    D-->>B: Acknowledges update
+    B-->>F: Returns updated diagram
+
+    U->>F: Edit or cancel the nodes/jobs in the diagram
+    F->>B: Sends edit or cancel request
+    B->>Redis: Modify or cancel the jobs in the queue
+    Redis-->>B: Acknowledges modification/cancellation
+    B-->>F: Returns updated status to Frontend
+
+    U->>F: Shares diagram
+    F->>B: Sends sharing request
+    B->>D: Updates sharing settings
+    D-->>B: Acknowledges update
+    B-->>F: Returns updated sharing settings
+
+    F->>B: Request to execute Diagram
+    B->>D: Fetch Diagram
+    B->>B: Translate Diagram to sequence of Instructions
+    loop Each Instruction
+        B->>D: Fetch Instruction details
+        B->>B: Check type of Instruction
+        alt If Instruction is to send email or perform immediate action
+            B->>B: Execute Instruction immediately
+        else If Instruction is to wait for a period of time
+            B->>Redis: Schedule Job with delay
+        else If Instruction is to wait until a certain time
+            B->>Redis: Schedule Job with delay until specific time
+        end
+    end
+
+    Redis->>B: Trigger Jobs as per the schedule
+    B->>B: Execute the respective Instruction
+    loop Each Instruction requiring GPT-4
+        B->>AI: Send Instruction details
+        AI->>B: Respond with suggested Instruction
+    end
+    B->>F: Send back results/confirmation
+
+```
+
+### [Entity-Relationship (ER) Diagram based on the Sequence Diagram](./tutorial/index/sql.md)
+
+**Introduction**
+
+Creating an Entity-Relationship (ER) diagram based on a sequence diagram involves determining the entities (or 'tables') involved and their relationships, including attributes and primary/foreign keys. In the case of your sequence diagram, the main entities we can discern are `User`, `MindMap`, `Instruction`, `Avatar`, and `Job`.
+
+**Mermaid ER Diagram**
+
+```mermaid
+erDiagram
+    USER ||--|{ MINDMAP : creates
+    USER ||--|{ INSTRUCTION : executes
+    MINDMAP ||--|| AVATAR : has
+    MINDMAP ||--|{ MINDMAP_INSTRUCTION : includes
+    MINDMAP_INSTRUCTION ||--|| INSTRUCTION : associated_with
+    INSTRUCTION ||--|{ JOB : triggers
+    JOB ||--|| INSTRUCTION : associated_with
+
+    USER {
+        string email
+        string password
+        string jwt
+    }
+    MINDMAP {
+        int mindmap_id
+        string mindmap_data
+    }
+    AVATAR {
+        int avatar_id
+        string avatar_data
+    }
+    INSTRUCTION {
+        int instruction_id
+        string instruction_type
+        string instruction_details
+    }
+    JOB {
+        int job_id
+        datetime trigger_time
+    }
+    MINDMAP_INSTRUCTION {
+        int mindmap_id
+        int instruction_id
+    }
+
+```
+
+```dbdiagram
+Table User {
+  email varchar [pk]
+  password varchar
+  jwt varchar
+}
+
+Table MindMap {
+  mindmap_id int [pk]
+  mindmap_data varchar
+  user_email varchar
+}
+
+Table Avatar {
+  avatar_id int [pk]
+  avatar_data varchar
+  mindmap_id int
+}
+
+Table Instruction {
+  instruction_id int [pk]
+  instruction_type varchar
+  instruction_details varchar
+}
+
+Table Job {
+  job_id int [pk]
+  trigger_time timestamp
+  instruction_id int
+}
+
+Table MindMap_Instruction {
+  mindmap_id int
+  instruction_id int
+}
+
+Ref: MindMap.user_email > User.email // one-to-many
+
+Ref: Avatar.mindmap_id > MindMap.mindmap_id // one-to-one
+
+Ref: Instruction.instruction_id < Job.instruction_id // one-to-many
+
+Ref: MindMap.mindmap_id < MindMap_Instruction.mindmap_id // one-to-many
+
+Ref: Instruction.instruction_id < MindMap_Instruction.instruction_id // one-to-many
+
+```
+
+**Entities (Tables) Description**
+
+1. `User`: This entity represents the users of the system. The attributes include `email`, `password`, and `jwt` (JSON Web Token for authentication).
+2. `MindMap`: This entity represents the mind maps created by the users. It has an ID (`mindmap_id`) and the mind map data (`mindmap_data`).
+3. `Avatar`: This entity represents the avatars created by the GPT-4 AI. Each mind map has an associated avatar.
+4. `Instruction`: This entity stores the instructions associated with each mind map. The attributes include `instruction_id`, `instruction_type`, and `instruction_details`.
+5. `Job`: This entity represents the jobs created for delayed or scheduled instructions. It has a `job_id` and a `trigger_time` which indicates when the job should be executed.
+6. `MindMap_Instruction`: This is the junction table that represents the many-to-many relationship between the `MindMap` and `Instruction` tables. It contains `mindmap_id` and `instruction_id` as foreign keys.
+   
+------
+
+1. **API Specs:** Use OpenAPI format. Endpoint `/api/register` (POST) - Expects: `{email, password}`, Returns: `{jwt}`. Endpoint `/api/diagram` (POST) - Expects: `{jwt, diagramData}`, Returns: `{status, diagramData}`.
+
+2. **Auth:** JWT based authentication. User roles: 'admin', 'user'. 'Admin' has all permissions, 'user' can create/edit own diagrams, view shared diagrams.
+
+3. **Error Handling:** Application employs try-catch logic. On failure, errors are logged server-side and a generic error message is returned to the client.
+
+4. **Business Rules:** Nodes creation limited to 100 per user. Instructions priority determined by user at creation, can be adjusted later. Nodes are only editable by the creator user.
+
+5. **Tech Stack:** Frontend - React, Backend - Node.js with Express, Database - PostgreSQL, Avatar API - Python Flask, Job Queue - Redis, Storage - AWS S3.
+
+6. **Test Cases:** Unit tests for each API endpoint. Integration test for user registration-login-diagram creation flow. End-to-end tests for user journeys.

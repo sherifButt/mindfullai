@@ -3,6 +3,12 @@
 **table of content:**
 
 - [GPT-4 to suggest node types or actions from a title and description](#gpt-4-to-suggest-node-types-or-actions-from-a-title-and-description)
+  - [Introduction](#introduction)
+  - [case](#case)
+  - [Interpreting the intent behind a title and description](#interpreting-the-intent-behind-a-title-and-description)
+  - [Automate Instruction injection into system prompt](#automate-instruction-injection-into-system-prompt)
+    - [Example 1](#example-1)
+    - [Example 2](#example-2)
   - [Handling Edge Cases and Re-prompting GPT-4](#handling-edge-cases-and-re-prompting-gpt-4)
     - [1. Re-prompting the AI](#1-re-prompting-the-ai)
   - [Maintaining Up-to-Date Instruction Tables and Error Handling in a Full-Stack Application](#maintaining-up-to-date-instruction-tables-and-error-handling-in-a-full-stack-application)
@@ -13,8 +19,11 @@
   - [Best Practices for Implementing Delayed Execution in Node.js](#best-practices-for-implementing-delayed-execution-in-nodejs)
   - [Handling Persistent Job Queues with Bull and Redis in Node.js Applications](#handling-persistent-job-queues-with-bull-and-redis-in-nodejs-applications)
 
+## Introduction
 
 OpenAI's GPT can be useful for understanding natural language and making suggestions, but as of my last update in September 2021, it doesn't perform actions directly. Therefore, you could use it to understand the instruction from a title and description and suggest a node type or action to be associated with a node, but the actual execution of that logic will have to be implemented by you. 
+
+## case
 
 For example, when creating a node, you could have a form field for "title" and "description". You could then send the title and description to your backend server, which uses GPT to process it and return suggested instruction.
 
@@ -22,24 +31,29 @@ Here's a high level sequence diagram to visualize it:
 
 ```mermaid
 sequenceDiagram
-    User->>FrontEnd: Create node with title and description
-    FrontEnd->>BackEnd: Send title and description
-    BackEnd->>GPT: Pass title and description
-    GPT->>BackEnd: Suggest instruction
-    BackEnd->>FrontEnd: Return suggested instruction
-    FrontEnd->>User: Display suggested instruction for confirmation
-    User->>FrontEnd: Confirm instruction
-    FrontEnd->>BackEnd: Save confirmed instruction for node
-    BackEnd->>DB: Store instruction in Diagram_Instruction table
-    DB-->>BackEnd: Acknowledge save
-    BackEnd-->>FrontEnd: Confirm instruction saved
+    actor U as User
+    participant F as FrontEnd
+    participant B as BackEnd
+    participant G as GPT
+    participant D as DB
+
+    U->>F: Create node with title and description
+    F->>B: Send title and description
+    B->>G: Pass title and description
+    G->>B: Suggest instruction
+    B->>F: Return suggested instruction
+    F->>U: Display suggested instruction for confirmation
+    U->>F: Confirm instruction
+    F->>B: Save confirmed instruction for node
+    B->>D: Store instruction in Diagram_Instruction table
+    D-->>B: Acknowledge save
+    B-->>F: Confirm instruction saved
 ```
 
-As GPT is a machine learning model, the suggestions might not always be accurate. Therefore, it's important to allow the user to confirm or edit the suggested instruction. 
+As G is a machine learning model, the suggestions might not always be accurate. Therefore, it's important to allow the user to confirm or edit the suggested instruction. 
 
-Please also note that since GPT-4 uses the data up until 2021, for any new instruction type or method introduced after 2021 won't be recognized accurately.
-
-Remember to keep user experience and performance considerations in mind when designing your system, as making a request to your backend and GPT for every node creation could slow down the user experience.
+> **Remember:** _to keep user experience and performance considerations in mind when designing your system, as making a request to your backend and GPT for every node creation could slow down the user experience._
+> Revise this for more detatils. [Optimizing User Experience and Performance in a Diagram-Driven Workflow System](./optimizing-user-experience-and-performance-in-a-diagram-driven-workflow-system.md)
 
 Lastly, using GPT to suggest instructions like this can be complex and might not be necessary depending on your use case. It's worth considering if there are simpler solutions to your problem, such as pre-defined instruction types that the user can select from.
 
@@ -83,6 +97,8 @@ Please note that you'll need to replace `'your-openai-api-key'` with your actual
 Remember, the AI can only make suggestions based on the information it's given. It doesn't know about your specific application or data, so the suggestions might not always be accurate or useful. It's important to validate the suggestions and provide a way for the user to confirm or edit them.
 
 Also, this is a very basic example of using GPT-3 for instruction suggestion. Depending on your application, you might need more complex logic, such as using different prompts for different types of nodes or further processing of the suggested instruction.
+
+## Interpreting the intent behind a title and description
 
 When using GPT-4, the goal would be to have it interpret the intent behind a title and description, and then suggest an appropriate instruction from the `Instruction` table. The way to do this is to use GPT-4's ability to generate text based on a given prompt, and then have a structured output format that it can generate.
 
@@ -138,8 +154,7 @@ Keep in mind that this is a relatively simple example. GPT-4 can generate more c
 
 It's also important to note that while GPT-4 is a powerful tool, it may not always generate the instruction you expect, and some degree of post-processing or verification may be required to ensure that the instruction makes sense in the context of your application. This system might need to be trained or fine-tuned for the specific tasks at hand.
 
-
------------
+## Automate Instruction injection into system prompt
 
 When considering more complex scenarios, we would have to expand on the logic to handle parameters and verify the correctness of generated instructions. Here's how we might proceed:
 
@@ -207,8 +222,7 @@ In this flow, when a user adds a node with a title and description, this is sent
 
 Please remember, this is an ideal situation where GPT-4 perfectly understands the context and generates the appropriate instructions and parameters. There might be scenarios where it may not perfectly understand the task, and human intervention or a feedback loop might be necessary to validate or correct the generated instruction.
 
-
-------
+### Example 1
 
 When you use GPT-4's `complete` function as described above, the result might look something like this:
 
@@ -243,7 +257,7 @@ console.log(parameters);   // Outputs: ["manager", "'Detailed Report'", "'Here i
 
 Note: The response from GPT-4 might not always be in the desired format. You might need to process it further depending on how the response is structured. You also need to handle edge cases and errors in your code.
 
-----
+### Example 2
 
 To instruct the GPT-4 API to choose an instruction from a predefined set of instructions, you should include the list of instructions in the system prompt. Here's how you might structure the prompt to generate an instruction that will be guaranteed to match with an instruction from your Instructions Table:
 
@@ -273,7 +287,6 @@ Always validate the response from the AI to ensure it matches an instruction fro
 
 Also, remember to format the generated instructions and their parameters to match the format stored in your Instructions Table.
 
------
 
 ## Handling Edge Cases and Re-prompting GPT-4
 

@@ -1,10 +1,5 @@
 # Entity-Relationship (ER) Diagram based on the Sequence Diagram
 
-
-**Introduction**
-
-Expanding the tables to their full potential would involve considering typical attributes that might be included in these types of tables. This includes information such as timestamps for record creation and updates, foreign keys to connect related entities, and additional columns to store data relevant to the application's use case.
-
 **Mermaid ER Diagram**
 
 ```mermaid
@@ -172,7 +167,7 @@ erDiagram
 
 [dbdiagram link](https://dbdiagram.io/d/6487e789722eb77494da0e29)
 
-<iframe width="700" height="800" src='https://dbdiagram.io/embed/6487e789722eb77494da0e29' frameBorder="0"> </iframe>
+<iframe width="80%" height="700" src='https://dbdiagram.io/embed/6487e789722eb77494da0e29' frameBorder="0"> </iframe>
 
 The `Avatar` table has been added, which includes a foreign key to the `User` table. The `Shared_Mindmaps` table has been added to handle sharing of mind maps between users. Each record in this table represents a specific mind map shared with a specific user. Please note that this is still a high-level diagram and the specifics might vary depending on the detailed requirements of your application.
 
@@ -186,102 +181,165 @@ manage user roles, actions, password reset procedures, email templates, and noti
 
 ```mermaid
 erDiagram
-    USER ||--|{ DIAGRAM : creates
-    USER ||--|{ INSTRUCTION : executes
-    USER ||--|{ USER_ROLE : has
-    USER ||--|{ ACTION_LOG : performs
-    USER ||--|{ PASSWORD_RESET : requests
-    USER ||--|{ NOTIFICATION : receives
-    DIAGRAM ||--|{ DIAGRAM_INSTRUCTION : includes
-    DIAGRAM_INSTRUCTION ||--|| INSTRUCTION : associated_with
-    INSTRUCTION ||--|{ JOB : triggers
-    JOB ||--|| INSTRUCTION : associated_with
-    AVATAR ||--|| USER : represents
-    AVATAR ||--o{ DIAGRAM : used_in
-    EMAIL_TEMPLATE ||--|| ACTION_LOG : logs
 
-    USER {
-        int user_id
-        string email
-        string password
-        string jwt
-        datetime created_at
-        datetime updated_at
+    USERS ||--|| EMAIL_TEMPLATES : "created_by"
+    USERS ||--|| TOKEN_BLACK_LIST : "user_id"
+    USERS ||--|| NODES : "created_by"
+    USERS ||--|| AVATARS : "user_id"
+    USERS ||--|| USER_ROLES : "user_id"
+    USERS ||--|| ACTION_LOGS : "user_id"
+    USERS ||--|| PASSWORD_RESETS : "user_id"
+    USERS ||--|| NOTIFICATIONS : "user_id"
+
+    INSTRUCTION_TYPES ||--|| DIAGRAM_INSTRUCTIONS : "instruction_types_id"
+    INSTRUCTION_TYPES ||--|| JOBS : "instruction_types_id"
+    INSTRUCTION_TYPES ||--|| NODE_INSTRUCTIONS : "instruction_types_id"
+
+    DIAGRAMS ||--|| JOBS : "diagram_id"
+    DIAGRAMS ||--|| EDGES : "diagram_id"
+    DIAGRAMS ||--|| NODES : "diagram_id"
+    DIAGRAMS ||--|| DIAGRAM_INSTRUCTIONS : "diagram_id"
+
+    NODES ||--|| DIAGRAM_INSTRUCTIONS : "node_id"
+    NODES ||--|| NODE_EDGE : "node_id"
+    NODES ||--|| NODE_INSTRUCTIONS : "node_id"
+
+    EDGES ||--|| NODE_EDGE : "edge_id"
+
+    USERS {
+        id serial
+        username varchar
+        email varchar
+        password varchar
+        jwt varchar
+        created_at timestamp
+        updated_at timestamp
     }
-    DIAGRAM {
-        int id
-        string diagram_data
-        string name
-        string description
-        datetime created_at
-        datetime updated_at
-        int created_by
-        string sharing_settings
+    TOKEN_BLACK_LIST {
+        id serial
+        user_id integer
+        token_id varchar
+        blacklisted_at timestamp
+        created_at timestamp
+        updated_at timestamp
     }
-    INSTRUCTION {
-        int id
-        int diagram_id
-        string node_id
-        string type
-        string name
-        string description
-        json parameters
-        int priority
-        datetime scheduled_time
-        int retry_count
-        int max_retry
-        datetime created_at
-        datetime updated_at
+    DIAGRAMS {
+        id serial
+        diagram_data jsonb
+        name varchar
+        slug varchar
+        description varchar
+        created_at timestamp
+        updated_at timestamp
+        created_by integer
+        sharing_settings varchar
     }
-    JOB {
-        int job_id
-        int instruction_id
-        datetime trigger_time
-        datetime created_at
-        datetime updated_at
+    NODES {
+        id serial
+        diagram_id integer
+        position jsonb
+        type varchar
+        data jsonb
+        created_at timestamp
+        updated_at timestamp
+        created_by integer
     }
-    DIAGRAM_INSTRUCTION {
-        int diagram_id
-        string node_id
-        string node_type
-        json parameters
-        datetime created_at
-        datetime updated_at
+    EDGES {
+        id serial
+        diagram_id integer
+        source integer
+        target integer
+        animated boolean
+        label varchar
     }
-    AVATAR {
-        int id
-        string image_url
-        datetime created_at
-        datetime updated_at
+    NODE_EDGE {
+        id serial
+        edge_id integer
+        node_id integer
+        created_at timestamp
+        updated_at timestamp
     }
-    USER_ROLE {
-        int user_id
-        string role
+    NODE_INSTRUCTIONS {
+        id serial
+        node_id integer
+        instruction_types_id integer
+        created_at timestamp
+        updated_at timestamp
+        created_by text
     }
-    ACTION_LOG {
-        int id
-        int user_id
-        string action
-        datetime timestamp
+    INSTRUCTION_TYPES {
+        id serial
+        name varchar
+        slug varchar
+        description varchar
+        parameters varchar
+        priority integer
+        max_retry integer
+        created_at timestamp
+        updated_at timestamp
+        created_by integer
     }
-    PASSWORD_RESET {
-        int id
-        int user_id
-        string reset_token
-        datetime expiry_time
+    DIAGRAM_INSTRUCTIONS {
+        id serial
+        diagram_id integer
+        instruction_types_id integer 
+        node_id integer
+        instruction_order integer
+        parameters jsonb
+        created_at timestamp
+        updated_at timestamp
     }
-    EMAIL_TEMPLATE {
-        int id
-        string template_name
-        string template_content
+    JOBS {
+        id serial
+        instruction_types_id integer
+        diagram_id integer
+        node_id integer
+        scheduled_time timestamp
+        retry_count integer
+        trigger_time timestamp
+        created_at timestamp
+        updated_at timestamp
     }
-    NOTIFICATION {
-        int id
-        int user_id
-        string content
-        datetime created_at
-        boolean is_read
+    AVATARS {
+        id serial
+        user_id integer
+        image_url varchar
+        created_at timestamp
+        updated_at timestamp
     }
+    USER_ROLES {
+        id serial
+        user_id integer
+        role varchar
+    }
+    ACTION_LOGS {
+        id serial
+        user_id integer
+        action varchar
+        timestamp timestamp
+    }
+    PASSWORD_RESETS {
+        id serial
+        user_id integer
+        reset_token varchar
+        expiry_time timestamp
+    }
+    EMAIL_TEMPLATES {
+        id serial
+        template_name varchar
+        template_content varchar
+        created_at timestamp
+        updated_at timestamp
+        created_by integer
+    }
+    NOTIFICATIONS {
+        id serial
+        user_id integer
+        content varchar
+        created_at timestamp
+        is_read boolean
+    }
+
 ```
 
 **Entities (Tables) Description**
@@ -307,18 +365,29 @@ This expanded ER diagram should now cover all the needs of your application, inc
 
 ```sql
 CREATE TABLE "users" (
-  "user_id" integer PRIMARY KEY,
-  "email" varchar,
+  "id" SERIAL PRIMARY KEY,
+  "username" varchar UNIQUE,
+  "email" varchar UNIQUE,
   "password" varchar,
   "jwt" varchar,
   "created_at" timestamp,
   "updated_at" timestamp
 );
 
+CREATE TABLE "token_black_list" (
+  "id" SERIAL PRIMARY KEY,
+  "user_id" integer,
+  "token_id" varchar(255),
+  "blacklisted_at" timestamp,
+  "created_at" timestamp,
+  "updated_at" timestamp
+);
+
 CREATE TABLE "diagrams" (
-  "id" integer PRIMARY KEY,
-  "diagram_data" varchar,
+  "id" SERIAL PRIMARY KEY,
+  "diagram_data" jsonb,
   "name" varchar,
+  "slug" varchar UNIQUE,
   "description" varchar,
   "created_at" timestamp,
   "updated_at" timestamp,
@@ -326,95 +395,165 @@ CREATE TABLE "diagrams" (
   "sharing_settings" varchar
 );
 
-CREATE TABLE "instructions" (
-  "id" integer PRIMARY KEY,
+CREATE TABLE "nodes" (
+  "id" SERIAL PRIMARY KEY,
   "diagram_id" integer,
-  "node_id" varchar,
+  "position" jsonb,
   "type" varchar,
+  "data" jsonb,
+  "created_at" timestamp,
+  "updated_at" timestamp,
+  "created_by" integer
+);
+
+CREATE TABLE "edges" (
+  "id" SERIAL PRIMARY KEY,
+  "diagram_id" integer,
+  "source" integer,
+  "target" integer,
+  "animated" boolean,
+  "label" varchar
+);
+
+CREATE TABLE "node_edge" (
+  "id" SERIAL PRIMARY KEY,
+  "edge_id" integer,
+  "node_id" integer,
+  "created_at" timestamp,
+  "updated_at" timestamp
+);
+
+CREATE TABLE "node_instructions" (
+  "id" SERIAL PRIMARY KEY,
+  "node_id" integer,
+  "instruction_types_id" integer,
+  "created_at" timestamp,
+  "updated_at" timestamp,
+  "created_by" text
+);
+
+CREATE TABLE "instruction_types" (
+  "id" SERIAL PRIMARY KEY,
   "name" varchar,
+  "slug" varchar UNIQUE,
   "description" varchar,
   "parameters" varchar,
   "priority" integer,
-  "scheduled_time" timestamp,
-  "retry_count" integer,
   "max_retry" integer,
+  "created_at" timestamp,
+  "updated_at" timestamp,
+  "created_by" integer
+);
+
+CREATE TABLE "diagram_instructions" (
+  "id" SERIAL PRIMARY KEY,
+  "diagram_id" integer,
+  "instruction_types_id" integer,
+  "node_id" integer,
+  "instruction_order" integer,
+  "parameters" varchar,
   "created_at" timestamp,
   "updated_at" timestamp
 );
 
 CREATE TABLE "jobs" (
-  "job_id" integer PRIMARY KEY,
-  "instruction_id" integer,
+  "id" SERIAL PRIMARY KEY,
+  "instruction_types_id" integer,
+  "diagram_id" integer,
+  "node_id" integer,
+  "scheduled_time" timestamp,
+  "retry_count" integer,
   "trigger_time" timestamp,
   "created_at" timestamp,
   "updated_at" timestamp
 );
 
-CREATE TABLE "diagram_instructions" (
-  "diagram_id" integer PRIMARY KEY,
-  "node_id" varchar,
-  "node_type" varchar,
-  "parameters" varchar,
-  "created_at" timestamp,
-  "updated_at" timestamp
-);
-
 CREATE TABLE "avatars" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
+  "user_id" integer,
   "image_url" varchar,
   "created_at" timestamp,
   "updated_at" timestamp
 );
 
 CREATE TABLE "user_roles" (
-  "user_id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
+  "user_id" integer,
   "role" varchar
 );
 
 CREATE TABLE "action_logs" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "user_id" integer,
   "action" varchar,
   "timestamp" timestamp
 );
 
 CREATE TABLE "password_resets" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "user_id" integer,
   "reset_token" varchar,
   "expiry_time" timestamp
 );
 
 CREATE TABLE "email_templates" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "template_name" varchar,
-  "template_content" varchar
+  "template_content" varchar,
+  "created_at" timestamp,
+  "updated_at" timestamp,
+  "created_by" integer
 );
 
 CREATE TABLE "notifications" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "user_id" integer,
   "content" varchar,
   "created_at" timestamp,
   "is_read" boolean
 );
 
-ALTER TABLE "diagrams" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("user_id");
+ALTER TABLE "diagram_instructions" ADD FOREIGN KEY ("instruction_types_id") REFERENCES "instruction_types" ("id");
 
-ALTER TABLE "instructions" ADD FOREIGN KEY ("diagram_id") REFERENCES "diagrams" ("id");
+ALTER TABLE "diagrams" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "jobs" ADD FOREIGN KEY ("instruction_id") REFERENCES "instructions" ("id");
+ALTER TABLE "instruction_types" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "jobs" ADD FOREIGN KEY ("instruction_types_id") REFERENCES "instruction_types" ("id");
+
+ALTER TABLE "jobs" ADD FOREIGN KEY ("diagram_id") REFERENCES "diagrams" ("id");
+
+ALTER TABLE "avatars" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "user_roles" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "action_logs" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "password_resets" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "notifications" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "node_instructions" ADD FOREIGN KEY ("node_id") REFERENCES "nodes" ("id");
+
+ALTER TABLE "node_instructions" ADD FOREIGN KEY ("instruction_types_id") REFERENCES "instruction_types" ("id");
+
+ALTER TABLE "node_edge" ADD FOREIGN KEY ("node_id") REFERENCES "nodes" ("id");
+
+ALTER TABLE "edges" ADD FOREIGN KEY ("diagram_id") REFERENCES "diagrams" ("id");
+
+ALTER TABLE "node_edge" ADD FOREIGN KEY ("edge_id") REFERENCES "edges" ("id");
+
+ALTER TABLE "nodes" ADD FOREIGN KEY ("diagram_id") REFERENCES "diagrams" ("id");
+
+ALTER TABLE "email_templates" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "token_black_list" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "diagram_instructions" ADD FOREIGN KEY ("diagram_id") REFERENCES "diagrams" ("id");
 
-ALTER TABLE "users" ADD FOREIGN KEY ("user_id") REFERENCES "avatars" ("id");
+ALTER TABLE "diagram_instructions" ADD FOREIGN KEY ("node_id") REFERENCES "nodes" ("id");
 
-ALTER TABLE "user_roles" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+ALTER TABLE "nodes" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "action_logs" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
-
-ALTER TABLE "password_resets" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
-
-ALTER TABLE "notifications" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
 ```
